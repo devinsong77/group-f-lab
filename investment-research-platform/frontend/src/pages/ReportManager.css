@@ -1,0 +1,117 @@
+.upload-area .upload-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.report-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.report-card {
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+.report-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.report-card-active {
+  border-left: 3px solid #1890ff;
+}
+
+.report-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.report-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+  margin-right: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.report-card-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.report-card-price {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.report-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.report-card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.report-detail {
+  margin-top: 12px;
+}
+
+.report-detail-divider {
+  border: none;
+  border-top: 1px solid #f0f0f0;
+  margin-bottom: 16px;
+}
+
+.report-detail-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.report-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.report-detail-points {
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+.report-detail-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.report-detail-points-text {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.8;
+  background: #fafafa;
+  padding: 12px;
+  border-radius: 6px;
+}
+
+.report-detail-points-text p {
+  margin-bottom: 4px;
+}
