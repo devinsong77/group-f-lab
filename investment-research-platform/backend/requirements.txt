@@ -1,0 +1,24 @@
+# 投研分析平台 - 后端依赖
+# 对齐 spec/08-系统架构与技术选型.md
+
+# Web 框架
+Flask>=2.3.0
+flask-cors>=4.0.0
+Werkzeug>=2.3.0
+
+# PDF 文本提取
+PyPDF2>=3.0.0
+pdfplumber>=0.9.0
+
+# LLM 客户端
+openai>=1.0.0
+
+# 数据/工具
+python-dateutil>=2.8.0
+
+# 测试
+pytest>=7.0.0
+pytest-cov>=4.0.0
+
+# 开发工具（可选）
+python-dotenv>=1.0.0
