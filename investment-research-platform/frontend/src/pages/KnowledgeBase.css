@@ -1,0 +1,113 @@
+.stock-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.stock-item {
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+.stock-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.stock-item-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.stock-item-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.stock-item-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stock-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stock-detail-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.market-data-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.market-data-item {
+  text-align: center;
+  padding: 16px;
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+.market-data-label {
+  display: block;
+  font-size: 13px;
+  color: #999;
+  margin-bottom: 6px;
+}
+
+.market-data-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.market-data-na {
+  font-size: 14px;
+  color: #999;
+  font-weight: 400;
+}
+
+.summary-text {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
+.related-reports {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.related-report-item {
+  padding: 12px;
+  background: #fafafa;
+  border-radius: 6px;
+}
+
+.related-report-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.related-report-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
