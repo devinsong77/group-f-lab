@@ -238,11 +238,21 @@ class ReportParser:
 
 | 环境变量 | 说明 | 默认值 |
 |----------|------|--------|
-| `LLM_API_KEY` | LLM API 密钥 | 无（必填） |
-| `LLM_BASE_URL` | LLM API 地址 | `https://dashscope.aliyuncs.com/compatible-mode/v1` |
-| `LLM_MODEL` | LLM 模型名称 | `qwen-plus` |
+| `LLM_API_KEY` | 百炼平台 API 密钥 | `sk-f47c2e9de62c4375800379e938e2c25b` |
+| `LLM_BASE_URL` | 百炼 DashScope API 地址 | `https://dashscope.aliyuncs.com/compatible-mode/v1` |
+| `LLM_MODEL` | 主模型名称（阿里百炼 Qwen3.5） | `qwen3.5-plus` |
+| `LLM_FALLBACK_MODEL` | 备用模型名称（百炼 GLM） | `glm-4-flash` |
 | `DATA_DIR` | 数据存储目录 | `data` |
 | `TEST_DATA_DIR` | 测试数据目录 | `test_data` |
+
+### 5.1 LLM 模型选型说明
+
+| 角色 | 模型 | 平台 | 说明 |
+|------|------|------|------|
+| 主模型 | `qwen3.5-plus` | 阿里百炼（DashScope） | Qwen3.5 系列商业版，效果好、速度快 |
+| 备用模型 | `glm-4-flash` | 阿里百炼（第三方接入） | GLM-4 系列轻量版，主模型异常时自动降级 |
+
+**降级策略**：研报解析时优先调用 Qwen3.5-Plus，若主模型返回异常（超时/错误/JSON 解析失败），自动重试备用模型 GLM-4-Flash，两个模型均失败时返回 `LLM_ERROR`。
 
 ## 6. 测试用例
 

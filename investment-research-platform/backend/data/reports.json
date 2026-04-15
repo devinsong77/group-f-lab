@@ -1,0 +1,16 @@
+{
+  "95b76dfa-5227-457f-8315-2d81f882ddef": {
+    "report_id": "95b76dfa-5227-457f-8315-2d81f882ddef",
+    "filename": "贵州茅台-中银证券.pdf",
+    "file_path": "data/reports/95b76dfa-5227-457f-8315-2d81f882ddef.pdf",
+    "parse_status": "completed",
+    "upload_time": "2026-04-15T04:59:30.137090+00:00"
+  },
+  "b158364f-3fb2-4d6a-bfc0-c9f5e3061259": {
+    "report_id": "b158364f-3fb2-4d6a-bfc0-c9f5e3061259",
+    "filename": "贵州茅台-浙商证券.pdf",
+    "file_path": "data/reports/b158364f-3fb2-4d6a-bfc0-c9f5e3061259.pdf",
+    "parse_status": "completed",
+    "upload_time": "2026-04-15T05:02:10.290477+00:00"
+  }
+}
