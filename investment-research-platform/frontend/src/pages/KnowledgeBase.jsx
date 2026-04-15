@@ -33,7 +33,6 @@ export default function KnowledgeBase() {
     try {
       const detail = await getStockDetail(stockCode);
       setSelectedStock(detail);
-      // Load market data (non-blocking)
       try {
         const md = await getMarketData(stockCode);
         setMarketData(md);
@@ -61,7 +60,7 @@ export default function KnowledgeBase() {
   if (selectedStock) {
     return (
       <div>
-        <h2 className="section-header">知识库</h2>
+        <h2 className="section-header">📚 知识库</h2>
         <span className="back-link" onClick={() => { setSelectedStock(null); setMarketData(null); }}>
           ← 返回股票列表
         </span>
@@ -69,23 +68,24 @@ export default function KnowledgeBase() {
         {error && <div className="error-msg">{error}</div>}
 
         <div className="card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-            <span className="tag tag-blue" style={{ fontSize: 16 }}>{selectedStock.stock_code}</span>
-            <span style={{ fontSize: 20, fontWeight: 600 }}>{selectedStock.stock_name}</span>
+          {/* Stock header */}
+          <div className="stock-header">
+            <span className="stock-header-code">{selectedStock.stock_code}</span>
+            <span className="stock-header-name">{selectedStock.stock_name}</span>
             {selectedStock.industry && <span className="tag tag-gray">{selectedStock.industry}</span>}
-            <span style={{ color: '#999' }}>共 {selectedStock.report_count} 份研报</span>
+            <span className="stock-header-count">共 {selectedStock.report_count} 份研报</span>
           </div>
 
           {/* Market data */}
           <div style={{ marginBottom: 24 }}>
-            <h3 style={{ marginBottom: 8 }}>行情数据</h3>
+            <div className="card-title">行情数据</div>
             {marketData ? (
               marketData.source === 'unavailable' ? (
                 <div className="market-grid">
                   {['PE（市盈率）', 'PB（市净率）', '总市值（亿元）', '最新收盘价'].map((l) => (
                     <div className="market-item" key={l}>
                       <div className="market-label">{l}</div>
-                      <div className="market-value" style={{ color: '#999' }}>暂无数据</div>
+                      <div className="market-value" style={{ color: 'var(--xq-text-muted)' }}>--</div>
                     </div>
                   ))}
                 </div>
@@ -94,55 +94,59 @@ export default function KnowledgeBase() {
                   <div className="market-grid">
                     <div className="market-item">
                       <div className="market-label">PE（市盈率）</div>
-                      <div className="market-value">{marketData.pe ?? '暂无数据'}</div>
+                      <div className="market-value">{marketData.pe ?? '--'}</div>
                     </div>
                     <div className="market-item">
                       <div className="market-label">PB（市净率）</div>
-                      <div className="market-value">{marketData.pb ?? '暂无数据'}</div>
+                      <div className="market-value">{marketData.pb ?? '--'}</div>
                     </div>
                     <div className="market-item">
                       <div className="market-label">总市值（亿元）</div>
-                      <div className="market-value">{marketData.market_cap ?? '暂无数据'}</div>
+                      <div className="market-value">{marketData.market_cap ?? '--'}</div>
                     </div>
                     <div className="market-item">
                       <div className="market-label">最新收盘价</div>
-                      <div className="market-value">{marketData.latest_price ?? '暂无数据'}</div>
+                      <div className="market-value" style={{ color: 'var(--xq-red)' }}>
+                        {marketData.latest_price != null ? `¥${marketData.latest_price}` : '--'}
+                      </div>
                     </div>
                   </div>
                   {marketData.source === 'cache' && marketData.data_time && (
-                    <p style={{ color: '#999', fontSize: 12, marginTop: 8 }}>
+                    <p style={{ color: 'var(--xq-text-muted)', fontSize: 12, marginTop: 8, textAlign: 'right' }}>
                       数据更新于 {new Date(marketData.data_time).toLocaleString('zh-CN')}
                     </p>
                   )}
                 </>
               )
             ) : (
-              <div style={{ color: '#999' }}>加载行情数据中...</div>
+              <div className="loading" style={{ padding: 20 }}>
+                <div className="spinner" style={{ width: 20, height: 20 }} />
+              </div>
             )}
           </div>
 
           {/* Summary */}
           {selectedStock.recent_summary && (
             <div style={{ marginBottom: 24 }}>
-              <h3 style={{ marginBottom: 8 }}>最近观点汇总</h3>
+              <div className="card-title">最近观点汇总</div>
               <div className="summary-text">{selectedStock.recent_summary}</div>
             </div>
           )}
 
           {/* Related reports */}
-          <h3 style={{ marginBottom: 12 }}>关联研报</h3>
+          <div className="card-title">关联研报</div>
           {(selectedStock.reports || []).length === 0 ? (
-            <div className="empty">暂无关联研报</div>
+            <div className="empty" style={{ padding: 32 }}>暂无关联研报</div>
           ) : (
             selectedStock.reports.map((r) => (
-              <div key={r.report_id} className="card" style={{ marginBottom: 8 }}>
-                <div style={{ fontWeight: 600, marginBottom: 4 }}>{r.title || '未命名'}</div>
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <div key={r.report_id} className="related-report">
+                <div className="related-report-title">{r.title || '未命名'}</div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
                   {r.rating && <span className={`tag rating-${r.rating}`}>{r.rating}</span>}
-                  {r.target_price != null && <span className="tag tag-gray">目标价: {r.target_price}元</span>}
+                  {r.target_price != null && <span className="tag tag-orange">目标价 ¥{r.target_price}</span>}
                 </div>
                 {r.key_points && (
-                  <p style={{ color: '#666', marginTop: 8, fontSize: 14 }}>{r.key_points}</p>
+                  <p style={{ color: 'var(--xq-text-secondary)', marginTop: 8, fontSize: 13, lineHeight: 1.7 }}>{r.key_points}</p>
                 )}
               </div>
             ))
@@ -155,17 +159,17 @@ export default function KnowledgeBase() {
   // List view
   return (
     <div>
-      <h2 className="section-header">知识库</h2>
+      <h2 className="section-header">📚 知识库</h2>
 
       {error && <div className="error-msg">{error}</div>}
 
       <div style={{ marginBottom: 16 }}>
         <input
           className="input"
-          placeholder="搜索股票代码、名称或行业..."
+          placeholder="🔍 搜索股票代码、名称或行业..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          style={{ width: '100%', maxWidth: 400 }}
+          style={{ width: '100%', maxWidth: 420 }}
         />
       </div>
 
@@ -179,15 +183,16 @@ export default function KnowledgeBase() {
             <div key={s.stock_code} className="stock-item" onClick={() => handleSelectStock(s.stock_code)}>
               <div className="stock-info">
                 <div className="stock-name">
-                  <span className="tag tag-blue">{s.stock_code}</span> {s.stock_name}
+                  <span className="stock-code">{s.stock_code}</span>
+                  {s.stock_name}
                 </div>
                 <div className="stock-meta">
                   {s.industry && <span>{s.industry}</span>}
                   {' · '}共 {s.report_count} 份研报
-                  {s.latest_report_date && <span> · 最新: {new Date(s.latest_report_date).toLocaleDateString('zh-CN')}</span>}
+                  {s.latest_report_date && <span> · 最新 {new Date(s.latest_report_date).toLocaleDateString('zh-CN')}</span>}
                 </div>
               </div>
-              <span style={{ color: '#999', fontSize: 20 }}>→</span>
+              <span className="stock-arrow">›</span>
             </div>
           ))}
         </div>

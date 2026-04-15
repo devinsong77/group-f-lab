@@ -1,8 +1,12 @@
 """ReportComparator — multi-report comparison engine."""
 from __future__ import annotations
 
+import hashlib
 import json
 import time
+
+# Key-points truncation limit per report (chars)
+_KP_MAX_CHARS = 600
 
 
 class ReportComparator:
@@ -11,6 +15,7 @@ class ReportComparator:
         self.llm_client = llm_client
         self.llm_model = llm_model
         self.llm_fallback_model = llm_fallback_model
+        self._compare_cache: dict[str, dict] = {}  # hash -> cached result
 
     def validate(self, report_ids: list) -> tuple[bool, str | None]:
         """Validate report_ids for comparison. Returns (ok, error_code)."""
@@ -30,8 +35,22 @@ class ReportComparator:
 
         return True, None
 
+    @staticmethod
+    def _cache_key(report_ids: list) -> str:
+        """Deterministic hash for a set of report IDs."""
+        key = "|".join(sorted(report_ids))
+        return hashlib.md5(key.encode()).hexdigest()
+
     def compare(self, report_ids: list) -> dict:
-        """Execute full comparison pipeline."""
+        """Execute full comparison pipeline with caching."""
+        # ── Check cache ──────────────────────────────────────
+        ck = self._cache_key(report_ids)
+        if ck in self._compare_cache:
+            cached = self._compare_cache[ck]
+            cached["compare_time_ms"] = 0  # instant
+            cached["from_cache"] = True
+            return cached
+
         start = time.time()
         parsed_reports = []
         for rid in report_ids:
@@ -48,14 +67,19 @@ class ReportComparator:
         all_differences = field_differences + kp_differences
         elapsed_ms = int((time.time() - start) * 1000)
 
-        return {
+        result = {
             "stock_code": stock_code,
             "stock_name": stock_name,
             "reports_summary": reports_summary,
             "similarities": similarities,
             "differences": all_differences,
             "compare_time_ms": elapsed_ms,
+            "from_cache": False,
         }
+
+        # ── Store in cache ───────────────────────────────────
+        self._compare_cache[ck] = result
+        return result
 
     def _build_reports_summary(self, parsed_reports: list) -> list:
         summaries = []
@@ -117,22 +141,17 @@ class ReportComparator:
 
     def _llm_compare_key_points(self, parsed_reports: list) -> tuple[list, list]:
         """Use LLM for semantic comparison of key points."""
-        reports_text = "\n\n".join([
-            f"研报{i+1}（{p.get('report_id', '')}）观点：{p.get('key_points', '')}"
+        # ── Truncate key_points to reduce tokens ─────────────
+        reports_text = "\n".join([
+            f"研报{i+1}（{p.get('report_id', '')}）：{p.get('key_points', '')[:_KP_MAX_CHARS]}"
             for i, p in enumerate(parsed_reports)
         ])
         report_ids = [p.get("report_id", "") for p in parsed_reports]
 
-        system_prompt = """你是金融研报分析专家。请比较以下多份研报的核心观点，返回严格JSON格式：
-{
-  "similarities": [
-    {"topic": "相似主题", "merged_view": "合并描述", "source_reports": ["report_id1", "report_id2"]}
-  ],
-  "differences": [
-    {"field": "key_points", "description": "差异描述", "highlight": "差异要点说明"}
-  ]
-}
-请只返回JSON。"""
+        system_prompt = ("比较以下研报观点，返回JSON："
+            '{"similarities":[{"topic":"主题","merged_view":"描述","source_reports":["id1"]}],'
+            '"differences":[{"field":"key_points","highlight":"差异要点"}]}'
+            "\n只返回JSON，不要解释。")
 
         response = self.llm_client.chat.completions.create(
             model=self.llm_model,
@@ -140,7 +159,8 @@ class ReportComparator:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": reports_text},
             ],
-            temperature=0.2,
+            temperature=0.1,
+            max_tokens=1024,
         )
         content = response.choices[0].message.content
         # Strip markdown code block if present

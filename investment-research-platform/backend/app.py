@@ -50,10 +50,12 @@ def create_app(data_dir=None, test_mode=False):
         llm_client=llm_client,
         llm_model=llm_model,
     )
+    # Comparator uses lighter qwen-plus (much faster for structured JSON tasks)
+    llm_compare_model = os.environ.get("LLM_COMPARE_MODEL", "qwen-plus")
     comparator = ReportComparator(
         storage=storage,
         llm_client=llm_client,
-        llm_model=llm_model,
+        llm_model=llm_compare_model,
         llm_fallback_model=llm_fallback_model,
     )
     stock_data_service = StockDataService()
