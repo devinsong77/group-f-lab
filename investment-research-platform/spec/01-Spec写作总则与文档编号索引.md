@@ -4,10 +4,10 @@
 
 | 项 | 值 |
 |---|---|
-| 模块编号 | 【填写】 |
-| 模块名称 | 【填写】 |
-| 文档版本 | |
-| 文档状态 | Draft / Review / Approved / Deprecated |
+| 模块编号 | M2-IRA |
+| 模块名称 | 投研分析平台（AI 研报助手） |
+| 文档版本 | v0.1 |
+| 文档状态 | Draft |
 
 ---
 
@@ -81,8 +81,8 @@
 
 | 示例 | 对应 |
 |------|------|
-| `03-Proposal-立项提案与范围-v2.0.md` | Proposal |
-| `09-API-接口规格-v2.0.md` | API Spec |
+| `03-Proposal-立项提案与范围-v1.0.md` | Proposal |
+| `09-API-接口规格-v1.0.md` | API Spec |
 
 **分类词表**：Elicitation · Proposal · PRD · UserStory · FSD · NFR · Architecture · API · Data · Security · Plan · Test · Traceability
 
@@ -92,6 +92,7 @@
 
 | 缩写 | 英文全称 | 中文含义 |
 |------|----------|----------|
+| **IRA** | Investment Research Analysis | 投研分析 |
 | **FSD** | Functional Specification Document | 功能规格说明 |
 | **NFR** | Non-Functional Requirement | 非功能需求 |
 | **PRD** | Product Requirements Document | 产品需求说明 |
@@ -104,6 +105,8 @@
 | **WBS** | Work Breakdown Structure | 工作分解结构 |
 | **SLO** | Service Level Objective | 服务等级目标 |
 | **LLM** | Large Language Model | 大语言模型 |
+| **KB** | Knowledge Base | 知识库 |
+| **RAG** | Retrieval-Augmented Generation | 检索增强生成 |
 
 ## 十、六阶段流程
 
@@ -135,23 +138,43 @@ Proposal(03-04) → Spec(05-06-07) → Design(08-09-10-11) → Plan(12) → Test
 ## 十二、源码目录参考
 
 ```
-modules-practice/module-01-investment-assistant/
+investment-research-platform/
 ├── backend/
-│   ├── app.py                      # Flask 入口（33 行）
-│   ├── agent.py                    # Agent 编排 — 三级降级（82 行）
-│   ├── storage.py                  # Storage 层 — JSON 文件 CRUD（112 行）
-│   ├── bailian_qa.py               # 百炼（DashScope）LLM 集成（90 行）
-│   ├── copaw_bridge.py             # CoPaw HTTP 桥接（70 行）
+│   ├── app.py                      # Flask 入口
+│   ├── parser.py                   # 研报解析引擎 — PDF 文本提取 + LLM 结构化
+│   ├── comparator.py               # 研报比对引擎 — 相似合并 + 差异高亮
+│   ├── knowledge_base.py           # 知识库管理 — 按股票聚合
+│   ├── qa_engine.py                # AI 问答引擎 — RAG 检索 + LLM 回答
+│   ├── stock_data.py               # AKShare 行情数据接口
+│   ├── storage.py                  # Storage 层 — 内存数据库 + JSON 持久化
 │   ├── blueprints/
-│   │   └── agent_bp.py             # API 路由 — 6 个端点（159 行）
-│   ├── data/                       # 生产数据（sessions.json + qa_records.json）
+│   │   ├── report_bp.py            # 研报管理 API 路由
+│   │   ├── kb_bp.py                # 知识库 API 路由
+│   │   ├── compare_bp.py           # 研报比对 API 路由
+│   │   └── qa_bp.py                # AI 问答 API 路由
+│   ├── data/                       # 生产数据（研报文件 + 解析结果）
 │   ├── test_data/                  # 测试数据（隔离）
 │   └── tests/
-│       └── test_agent.py           # 测试文件（7 条已实现 TC）
+│       ├── test_parser.py          # 解析引擎测试
+│       ├── test_comparator.py      # 比对引擎测试
+│       ├── test_kb.py              # 知识库测试
+│       └── test_qa.py              # 问答引擎测试
 ├── frontend/
 │   └── src/
-│       ├── App.jsx                 # 主组件（290 行）
-│       ├── api.js                  # API 客户端（80 行）
+│       ├── App.jsx                 # 主组件
+│       ├── pages/
+│       │   ├── ReportManager.jsx   # 研报管理页
+│       │   ├── KnowledgeBase.jsx   # 知识库页
+│       │   ├── ReportCompare.jsx   # 研报比对页
+│       │   └── QAAssistant.jsx     # AI 问答页
+│       ├── components/             # 通用组件
+│       ├── api.js                  # API 客户端
 │       └── App.css                 # 样式
 └── README.md
 ```
+
+---
+
+| 版本 | 日期 | 说明 |
+|------|------|------|
+| v0.1 | 2026-04-15 | 首版填写 |
