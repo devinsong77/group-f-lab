@@ -106,7 +106,6 @@
 | **SLO** | Service Level Objective | 服务等级目标 |
 | **LLM** | Large Language Model | 大语言模型 |
 | **KB** | Knowledge Base | 知识库 |
-| **RAG** | Retrieval-Augmented Generation | 检索增强生成 |
 
 ## 十、六阶段流程
 
