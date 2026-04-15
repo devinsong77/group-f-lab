@@ -29,7 +29,6 @@
 | 9 | `/api/v1/kb/stocks/{code}` | GET | 股票知识库详情 | 200 |
 | 10 | `/api/v1/kb/stocks/{code}/reports` | GET | 股票关联研报 | 200 |
 | 11 | `/api/v1/stocks/{code}/market-data` | GET | 行情数据 | 200 |
-| 12 | `/api/v1/qa/ask` | POST | AI 问答 | 200 |
 
 ## 2. 统一响应规范
 
@@ -53,8 +52,6 @@
 | 400 | `FILE_TOO_LARGE` | 文件超过 50MB | `{"max_size_mb": 50}` |
 | 400 | `COMPARE_MIN_REPORTS` | 比对研报数 < 2 | `{"min_count": 2}` |
 | 400 | `COMPARE_DIFF_STOCK` | 比对研报不属于同一公司 | `{}` |
-| 400 | `EMPTY_QUERY` | query 为空/null | `{}` |
-| 400 | `INVALID_QUERY` | query 超 500 字符 | `{"max_length": 500}` |
 | 404 | `REPORT_NOT_FOUND` | 研报不存在 | `{}` |
 | 404 | `STOCK_NOT_FOUND` | 股票知识库不存在 | `{}` |
 | 500 | `PARSE_FAILED` | PDF 提取或 LLM 解析失败 | `{"reason": "..."}` |
@@ -234,30 +231,7 @@
 | `data_time` | string\|null | 是 | 数据更新时间 |
 | `source` | string | 是 | "akshare" 或 "cache" 或 "unavailable" |
 
-## 12. POST /qa/ask — AI 问答
-
-**请求体**：
-
-| 字段 | 类型 | 必填 | 约束 | 说明 |
-|------|------|------|------|------|
-| `query` | string | **是** | 1-500 字符 | 用户提问 |
-| `stock_code` | string | 否 | 6 位数字 | 限定股票范围（可选） |
-
-**成功响应**（200）：
-
-| 字段 | 类型 | 必有 | 说明 |
-|------|------|------|------|
-| `traceId` | string | 是 | 链路追踪 ID |
-| `answer` | string | 是 | AI 生成的回答 |
-| `references` | array | 是 | 引用来源列表 |
-| `references[].report_id` | string | 是 | 引用的研报 ID |
-| `references[].title` | string | 是 | 研报标题 |
-| `references[].snippet` | string | 是 | 引用的文本片段 |
-| `references[].file_url` | string | 是 | 原文件下载链接 |
-| `response_time_ms` | integer | 是 | 响应耗时（毫秒） |
-| `llm_used` | boolean | 是 | 是否使用 LLM |
-
-## 13. 参数校验规则汇总
+## 12. 参数校验规则汇总
 
 | 端点 | 字段 | 规则 | 失败 HTTP | error.code |
 |------|------|------|-----------|-----------|
@@ -265,8 +239,6 @@
 | POST /reports/upload | `file` | ≤ 50MB | 400 | `FILE_TOO_LARGE` |
 | POST /reports/compare | `report_ids` | ≥ 2 个 | 400 | `COMPARE_MIN_REPORTS` |
 | POST /reports/compare | `report_ids` | 同一 stock_code | 400 | `COMPARE_DIFF_STOCK` |
-| POST /qa/ask | `query` | 非空/非空白 | 400 | `EMPTY_QUERY` |
-| POST /qa/ask | `query` | ≤ 500 字符 | 400 | `INVALID_QUERY` |
 | GET /reports/{id} | `id` | 存在 | 404 | `REPORT_NOT_FOUND` |
 | GET /kb/stocks/{code} | `code` | 存在 | 404 | `STOCK_NOT_FOUND` |
 

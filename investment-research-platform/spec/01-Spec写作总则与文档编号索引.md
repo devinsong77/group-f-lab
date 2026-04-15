@@ -144,29 +144,25 @@ investment-research-platform/
 │   ├── parser.py                   # 研报解析引擎 — PDF 文本提取 + LLM 结构化
 │   ├── comparator.py               # 研报比对引擎 — 相似合并 + 差异高亮
 │   ├── knowledge_base.py           # 知识库管理 — 按股票聚合
-│   ├── qa_engine.py                # AI 问答引擎 — RAG 检索 + LLM 回答
 │   ├── stock_data.py               # AKShare 行情数据接口
 │   ├── storage.py                  # Storage 层 — 内存数据库 + JSON 持久化
 │   ├── blueprints/
 │   │   ├── report_bp.py            # 研报管理 API 路由
 │   │   ├── kb_bp.py                # 知识库 API 路由
-│   │   ├── compare_bp.py           # 研报比对 API 路由
-│   │   └── qa_bp.py                # AI 问答 API 路由
+│   │   └── compare_bp.py           # 研报比对 API 路由
 │   ├── data/                       # 生产数据（研报文件 + 解析结果）
 │   ├── test_data/                  # 测试数据（隔离）
 │   └── tests/
 │       ├── test_parser.py          # 解析引擎测试
 │       ├── test_comparator.py      # 比对引擎测试
-│       ├── test_kb.py              # 知识库测试
-│       └── test_qa.py              # 问答引擎测试
+│       └── test_kb.py              # 知识库测试
 ├── frontend/
 │   └── src/
 │       ├── App.jsx                 # 主组件
 │       ├── pages/
 │       │   ├── ReportManager.jsx   # 研报管理页
 │       │   ├── KnowledgeBase.jsx   # 知识库页
-│       │   ├── ReportCompare.jsx   # 研报比对页
-│       │   └── QAAssistant.jsx     # AI 问答页
+│       │   └── ReportCompare.jsx   # 研报比对页
 │       ├── components/             # 通用组件
 │       ├── api.js                  # API 客户端
 │       └── App.css                 # 样式
