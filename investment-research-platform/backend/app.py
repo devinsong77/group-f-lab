@@ -13,6 +13,8 @@ from stock_data import StockDataService
 from blueprints.report_bp import report_bp
 from blueprints.kb_bp import kb_bp
 from blueprints.compare_bp import compare_bp
+from blueprints.qa_bp import qa_bp
+from qa_service import QAService
 
 
 def create_app(data_dir=None, test_mode=False):
@@ -59,6 +61,13 @@ def create_app(data_dir=None, test_mode=False):
         llm_fallback_model=llm_fallback_model,
     )
     stock_data_service = StockDataService()
+    qa_service = QAService(
+        storage=storage,
+        llm_client=llm_client,
+        llm_model=llm_model,
+        llm_fallback_model=llm_fallback_model,
+        data_dir=data_dir,
+    )
 
     # Inject into app config
     app.config["storage"] = storage
@@ -66,11 +75,13 @@ def create_app(data_dir=None, test_mode=False):
     app.config["kb_manager"] = kb_manager
     app.config["comparator"] = comparator
     app.config["stock_data_service"] = stock_data_service
+    app.config["qa_service"] = qa_service
 
     # Register blueprints
     app.register_blueprint(report_bp, url_prefix="/api/v1")
     app.register_blueprint(kb_bp, url_prefix="/api/v1")
     app.register_blueprint(compare_bp, url_prefix="/api/v1")
+    app.register_blueprint(qa_bp, url_prefix="/api/v1")
 
     return app
 

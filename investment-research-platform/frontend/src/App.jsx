@@ -3,11 +3,13 @@ import './App.css';
 import ReportManager from './pages/ReportManager';
 import KnowledgeBase from './pages/KnowledgeBase';
 import ReportCompare from './pages/ReportCompare';
+import ReportQA from './pages/ReportQA';
 
 const TABS = [
   { key: 'reports', label: '研报管理', icon: '📋' },
   { key: 'kb', label: '知识库', icon: '📚' },
   { key: 'compare', label: '研报比对', icon: '⚖️' },
+  { key: 'qa', label: '研报问答', icon: '💬' },
 ];
 
 function App() {
@@ -38,6 +40,7 @@ function App() {
         {activeTab === 'reports' && <ReportManager />}
         {activeTab === 'kb' && <KnowledgeBase />}
         {activeTab === 'compare' && <ReportCompare />}
+        {activeTab === 'qa' && <ReportQA />}
       </main>
     </div>
   );
